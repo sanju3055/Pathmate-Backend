@@ -80,7 +80,7 @@ public class AuthController {
                 context.setVariable("message", "Pathmates OTP Verification." + "Your OTP is: " + otp);
                 context.setVariable("subject", "Pathmates Security Code");
                 context.setVariable("otp", otp);
-                emailService.sentMail("", "sunilotale181298@gmail.com", "Pathmates Security Code",
+                emailService.sentMail("", entity.getEmail(), "Pathmates Security Code",
                         "EmailOtpTemplate", context);
                 OtpVerification otpVerification = new OtpVerification();
                 otpVerification.setUser(repository.findByEmail(entity.getEmail()));
@@ -156,7 +156,7 @@ public class AuthController {
             context.setVariable("name", email);
             context.setVariable("subject", "Pathmates Security Code: Reset Password");
             context.setVariable("token", token);
-            emailService.sentMail("", "sunilotale181298@gmail.com", "Pathmates Security Code",
+            emailService.sentMail("", email, "Pathmates Security Code",
                     "EmailPasswordResetToken", context);
 
             PasswordResetToken resetToken = new PasswordResetToken();
