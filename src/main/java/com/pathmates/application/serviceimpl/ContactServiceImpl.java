@@ -43,10 +43,11 @@ public class ContactServiceImpl implements ContactService {
     }
 
     @Override
-    public void deleteContact(String contactId) {
+    public ApiResponse<String>  deleteContact(String contactId) {
         Optional<Contact> contact = repository.findById(contactId);
         if (contact.isPresent()) {
             repository.delete(contact.get());
+            return new ApiResponse<>(true, "", "Contact deleted successfully", null);
         } else {
             throw new IllegalArgumentException("Contact not found");
         }

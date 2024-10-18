@@ -22,12 +22,14 @@ public class ChatMessage extends Auditable {
     @Id
     @UuidGenerator
     private String chatMessageId;
-    private String sender;
     private String content;
-    private String messageType;
     private Double latitude;
     private Double longitude;
     private LocalDateTime timestamp;
+
+    @ManyToOne()
+    @JoinColumn(name = "sender_id", nullable = false)
+    private Contact sender;
 
     @ManyToOne()
     @JoinColumn(name = "trip_id", nullable = false)

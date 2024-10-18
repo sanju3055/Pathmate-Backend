@@ -49,11 +49,11 @@ public class OtpVerificationServiceImpl implements OtpVerificationService {
     }
 
     @Override
-    public void deleteOtpVerificationDTO(String otpVerificationId) {
+    public ApiResponse<String>  deleteOtpVerificationDTO(String otpVerificationId) {
         Optional<OtpVerification> otpVerification = repository.findById(otpVerificationId);
         if (otpVerification.isPresent()) {
             repository.delete(otpVerification.get());
-            return;
+            return new ApiResponse<>(true, null, "OtpVerification deleted successfully", null);
         }
         throw new IllegalArgumentException("OtpVerification not found");
     }

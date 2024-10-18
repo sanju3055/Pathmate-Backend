@@ -13,6 +13,7 @@ import com.pathmates.application.dto.ContactDTO;
 import com.pathmates.application.serviceimpl.ContactServiceImpl;
 import com.pathmates.application.utils.ApiResponse;
 
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -45,5 +46,10 @@ public class ContactController {
     public ResponseEntity<ApiResponse<ContactDTO>> updateContact(@PathVariable String contactId,
             @RequestBody ContactDTO entity) {
         return new ResponseEntity<>(serviceImpl.updateContact(contactId, entity), HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{contactId}")
+    public ResponseEntity<ApiResponse<String>> deleteContact(@PathVariable String contactId) {
+        return new ResponseEntity<>(serviceImpl.deleteContact(contactId), HttpStatus.OK);
     }
 }

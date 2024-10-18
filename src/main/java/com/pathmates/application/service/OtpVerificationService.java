@@ -7,5 +7,5 @@ public interface OtpVerificationService {
 ApiResponse<OtpVerificationDTO> createOtpVerificationDTO(OtpVerificationDTO otpVerificationDTO);
     ApiResponse<OtpVerificationDTO> getOtpVerificationDTOById(String otpVerificationId);
     ApiResponse<OtpVerificationDTO> updateOtpVerificationDTO(String otpVerificationId, OtpVerificationDTO otpVerificationDTO);
-    void deleteOtpVerificationDTO(String otpVerificationId);
+    ApiResponse<String> deleteOtpVerificationDTO(String otpVerificationId);
 }

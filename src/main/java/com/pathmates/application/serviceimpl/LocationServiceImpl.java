@@ -43,10 +43,11 @@ public class LocationServiceImpl implements LocationService {
     }
 
     @Override
-    public void deleteLocation(String locationId) {
+    public ApiResponse<String> deleteLocation(String locationId) {
         Optional<Location> location = repository.findById(locationId);
         if (location.isPresent()) {
             repository.delete(location.get());
+            return new ApiResponse<>(true, "", "Location deleted successfully", null);
         } else {
             throw new IllegalArgumentException("Location not found");
         }

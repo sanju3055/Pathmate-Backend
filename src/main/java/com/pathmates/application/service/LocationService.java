@@ -7,5 +7,5 @@ public interface LocationService {
     ApiResponse<LocationDTO> createLocation(LocationDTO locationDTO);
     ApiResponse<LocationDTO> getLocationById(String locationId);
     ApiResponse<LocationDTO> updateLocation(String locationId, LocationDTO locationDTO);
-    void deleteLocation(String locationId);
+    ApiResponse<String> deleteLocation(String locationId);
 }

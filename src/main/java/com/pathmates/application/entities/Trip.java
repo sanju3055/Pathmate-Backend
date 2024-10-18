@@ -5,7 +5,9 @@ import java.util.Set;
 
 import org.hibernate.annotations.UuidGenerator;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
@@ -26,6 +28,7 @@ public class Trip extends Auditable {
     @Id
     @UuidGenerator
     private String tripId;
+
     private String name;
     private String description;
 
@@ -34,18 +37,18 @@ public class Trip extends Auditable {
     private LocalDateTime startTime;
     private LocalDateTime endTime;
 
-    @OneToMany()
-    @JoinColumn(name = "trip")
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "trip_id")
     private Set<ChatMessage> chatMessages;
 
-    @OneToMany()
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "trip_id")
     private Set<Destination> destinations;
 
-    @OneToMany(mappedBy = "trip")
+    @OneToMany(mappedBy = "trip", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Set<Contact> contacts;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "trip_user", joinColumns = @JoinColumn(name = "trip_id"), inverseJoinColumns = @JoinColumn(name = "user_id"))
     private Set<User> users;
 

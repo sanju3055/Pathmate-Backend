@@ -23,7 +23,8 @@ public class ChatMessageServiceImpl implements ChatMessageService {
 
     @Override
     public ApiResponse<ChatMessageDTO> createChatMessage(ChatMessageDTO chatMessageDTO) {
-        return new ApiResponse<>(true, "", mapper.mapToChatMessageDTO(repository.save(mapper.mapToChatMessage(chatMessageDTO))), null);
+        return new ApiResponse<>(true, "",
+                mapper.mapToChatMessageDTO(repository.save(mapper.mapToChatMessage(chatMessageDTO))), null);
     }
 
     @Override
@@ -42,13 +43,14 @@ public class ChatMessageServiceImpl implements ChatMessageService {
     }
 
     @Override
-    public void deleteChatMessage(String chatMessageId) {
-       Optional<ChatMessage> chatMessage = repository.findById(chatMessageId);
-       if (chatMessage.isPresent()) {
-           repository.delete(chatMessage.get());
-       } else {
-           throw new IllegalArgumentException("Chat message not found");
-       }
+    public ApiResponse<String> deleteChatMessage(String chatMessageId) {
+        Optional<ChatMessage> chatMessage = repository.findById(chatMessageId);
+        if (chatMessage.isPresent()) {
+            repository.delete(chatMessage.get());
+            return new ApiResponse<>(true, "", "Chat message deleted successfully", null);
+        } else {
+            throw new IllegalArgumentException("Chat message not found");
+        }
     }
 
 }

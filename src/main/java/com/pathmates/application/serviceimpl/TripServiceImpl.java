@@ -1,5 +1,6 @@
 package com.pathmates.application.serviceimpl;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,9 +43,13 @@ public class TripServiceImpl implements TripService {
     }
 
     @Override
-    public void deleteTrip(String TripId) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'deleteTrip'");
+    public ApiResponse<String> deleteTrip(String tripId) {
+        Optional<Trip> trip = repository.findById(tripId);
+        if (trip.isPresent()) {
+            repository.delete(trip.get());
+            return new ApiResponse<>(true, "", "Trip deleted successfully", null);
+        }
+        return new ApiResponse<>(true, "", "Trip is not found", null);
     }
 
     @Override
@@ -63,6 +68,12 @@ public class TripServiceImpl implements TripService {
     public boolean isTripNameTaken(String name) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'isTripNameTaken'");
+    }
+
+    @Override
+    public ApiResponse<List<TripDTO>> getTrips() {
+        List<Trip> trips = repository.findAll();
+        return new ApiResponse<>(true, "", mapper.mapToTripDTOList(trips), null);
     }
 
 }

@@ -7,5 +7,5 @@ public interface StayPointService {
     ApiResponse<StayPointDTO> createStayPoint(StayPointDTO stayPointDTO);
     ApiResponse<StayPointDTO> getStayPointById(String stayPointId);
     ApiResponse<StayPointDTO> updateStayPoint(String stayPointId, StayPointDTO stayPointDTO);
-    void deleteStayPoint(String stayPointId);
+    ApiResponse<String> deleteStayPoint(String stayPointId);
 }

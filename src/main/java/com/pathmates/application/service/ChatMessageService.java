@@ -7,5 +7,5 @@ public interface ChatMessageService {
     ApiResponse<ChatMessageDTO> createChatMessage(ChatMessageDTO chatMessageDTO);
     ApiResponse<ChatMessageDTO> getChatMessageById(String chatMessageId);
     ApiResponse<ChatMessageDTO> updateChatMessage(String chatMessageId, ChatMessageDTO chatMessageDTO);
-    void deleteChatMessage(String chatMessageId);
+    ApiResponse<String> deleteChatMessage(String chatMessageId);
 }

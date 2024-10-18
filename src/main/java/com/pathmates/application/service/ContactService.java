@@ -14,5 +14,5 @@ public interface ContactService {
 
     ApiResponse<ContactDTO> updateContact(String contactId, ContactDTO entity);
 
-    void deleteContact(String contactId);
+    ApiResponse<String> deleteContact(String contactId);
 }

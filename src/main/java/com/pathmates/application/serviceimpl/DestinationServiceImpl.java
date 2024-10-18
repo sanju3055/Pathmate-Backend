@@ -21,32 +21,35 @@ public class DestinationServiceImpl implements DestinationService {
     @Autowired
     private DestinationMapper mapper;
 
-
     @Override
     public ApiResponse<DestinationDTO> createDestination(DestinationDTO entity) {
-        return new ApiResponse<>(true, "", mapper.mapToDestinationDTO(repository.save(mapper.mapToDestination(entity))), null);
+        return new ApiResponse<>(true, "", mapper.mapToDestinationDTO(repository.save(mapper.mapToDestination(entity))),
+                null);
     }
 
     @Override
     public ApiResponse<DestinationDTO> getDestinationById(String destinationId) {
-        return new ApiResponse<>(true, destinationId, mapper.mapToDestinationDTO(repository.findById(destinationId).get()), null);
+        return new ApiResponse<>(true, destinationId,
+                mapper.mapToDestinationDTO(repository.findById(destinationId).get()), null);
     }
 
     @Override
     public ApiResponse<DestinationDTO> updateDestination(String destinationId, DestinationDTO entity) {
-       Optional<Destination> destination = repository.findById(destinationId);
-       if (destination.isPresent()) {
-           destination.get().setName(entity.getName());
-           return new ApiResponse<>(true, destinationId, mapper.mapToDestinationDTO(repository.save(destination.get())), null);
-       }
-       return new ApiResponse<>(true, destinationId, "Destination not found", null);
+        Optional<Destination> destination = repository.findById(destinationId);
+        if (destination.isPresent()) {
+            destination.get().setName(entity.getName());
+            return new ApiResponse<>(true, destinationId,
+                    mapper.mapToDestinationDTO(repository.save(destination.get())), null);
+        }
+        return new ApiResponse<>(true, destinationId, "Destination not found", null);
     }
 
     @Override
-    public void deleteDestination(String destinationId) {
+    public ApiResponse<String> deleteDestination(String destinationId) {
         Optional<Destination> destination = repository.findById(destinationId);
         if (destination.isPresent()) {
             repository.delete(destination.get());
+            return new ApiResponse<>(true, "", "Destination deleted successfully", null);
         } else {
             throw new IllegalArgumentException("Destination not found");
         }

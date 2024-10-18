@@ -7,5 +7,5 @@ public interface DestinationService {
     ApiResponse<DestinationDTO> createDestination(DestinationDTO entity);
     ApiResponse<DestinationDTO> getDestinationById(String destinationId);
     ApiResponse<DestinationDTO> updateDestination(String destinationId, DestinationDTO entity);
-    void deleteDestination(String destinationId);
+    ApiResponse<String> deleteDestination(String destinationId);
 }

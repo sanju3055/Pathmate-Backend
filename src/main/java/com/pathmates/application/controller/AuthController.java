@@ -86,7 +86,7 @@ public class AuthController {
                 otpVerification.setUser(repository.findByEmail(entity.getEmail()));
                 ;
                 otpVerification.setOtp(String.valueOf(otp));
-                LocalDateTime expirationTime = LocalDateTime.now().plusMinutes(10);
+                LocalDateTime expirationTime = LocalDateTime.now().plusMinutes(5);
                 otpVerification.setExpiresAt(expirationTime);
                 otpVerificationRepository.save(otpVerification);
                 return new ResponseEntity<>(new ApiResponse<>(true, "Otp is sent to register email.", null, null),
@@ -122,7 +122,8 @@ public class AuthController {
                         HttpStatus.NOT_FOUND);
             }
             if (entity.getOtp() != null && entity.getOtp().equals(otpVerification.get().getOtp())
-                    && LocalDateTime.now().isBefore(entity.getExpiresAt())) {
+                    && LocalDateTime.now().isBefore(otpVerification.get().getExpiresAt())
+                    && otpVerification.get().getIsVerified() == false) {
                 UserDetails userDetails = userDetailsService.loadUserByUsername(entity.getUser().getEmail());
                 String token = jwtService.generateToken(userDetails);
                 AuthResponse authResponse = new AuthResponse();
@@ -133,7 +134,7 @@ public class AuthController {
                 return new ResponseEntity<>(new ApiResponse<>(true, "OTP verified successfully", authResponse, null),
                         HttpStatus.OK);
             }
-            return new ResponseEntity<>(new ApiResponse<>(false, "Invalid OTP or OTP is Expired", null, null),
+            return new ResponseEntity<>(new ApiResponse<>(false, "OTP is Invalid/Expired", null, null),
                     HttpStatus.FORBIDDEN);
 
         } catch (Exception e) {
@@ -144,26 +145,27 @@ public class AuthController {
     }
 
     @PostMapping("/forgot-password")
-    public ResponseEntity<ApiResponse<String>> forgotPassword(@RequestBody String email) {
+    public ResponseEntity<ApiResponse<String>> forgotPassword(@RequestBody UserDTO user) {
         try {
-            if (!repository.existsByEmail(email)) {
+            if (!repository.existsByEmail(user.getEmail())) {
                 return new ResponseEntity<>(new ApiResponse<>(false, "Email not found", null, null),
                         HttpStatus.NOT_FOUND);
             }
 
             String token = UUID.randomUUID().toString();
             Context context = new Context();
-            context.setVariable("name", email);
+            context.setVariable("name", user.getEmail());
             context.setVariable("subject", "Pathmates Security Code: Reset Password");
             context.setVariable("token", token);
-            emailService.sentMail("", email, "Pathmates Security Code",
+            context.setVariable("email", user.getEmail());
+            emailService.sentMail("", user.getEmail(), "Pathmates Security Code",
                     "EmailPasswordResetToken", context);
 
             PasswordResetToken resetToken = new PasswordResetToken();
-            LocalDateTime expirationTime = LocalDateTime.now().plusMinutes(10);
+            LocalDateTime expirationTime = LocalDateTime.now().plusMinutes(5);
             resetToken.setExpiresAt(expirationTime);
             resetToken.setToken(token);
-            resetToken.setUser(repository.findByEmail(email));
+            resetToken.setUser(repository.findByEmail(user.getEmail()));
 
             passwordResetTokenRepository.save(resetToken);
             return new ResponseEntity<>(new ApiResponse<>(true, "Reset password link sent successfully", null, null),
@@ -214,7 +216,8 @@ public class AuthController {
             }
 
             if (entity.getPassword() != null && entity.getToken().equals(resetToken.get().getToken())
-                    && LocalDateTime.now().isBefore(entity.getExpiresAt())) {
+                    && LocalDateTime.now().isBefore(resetToken.get().getExpiresAt())
+                    && resetToken.get().getIsVerified() == false) {
                 user.setPassword(passwordEncoder.encode(entity.getPassword()));
                 repository.save(user);
                 resetToken.get().setIsVerified(true);

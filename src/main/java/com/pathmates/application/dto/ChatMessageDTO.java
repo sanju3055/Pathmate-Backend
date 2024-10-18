@@ -2,6 +2,7 @@ package com.pathmates.application.dto;
 
 import java.time.LocalDateTime;
 
+import com.pathmates.application.entities.Contact;
 import com.pathmates.application.entities.Trip;
 
 import lombok.AllArgsConstructor;
@@ -14,9 +15,8 @@ import java.time.Instant;
 @Data
 public class ChatMessageDTO {
     private String chatMessageId;
-    private String sender;
+    private Contact sender;
     private String content;
-    private String messageType;
     private Double latitude;
     private Double longitude;
     private LocalDateTime timestamp;

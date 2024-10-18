@@ -43,10 +43,11 @@ public class StayPointServiceImpl implements StayPointService {
     }
 
     @Override
-    public void deleteStayPoint(String stayPointId) {
+    public ApiResponse<String>  deleteStayPoint(String stayPointId) {
         Optional<StayPoint> stayPoint = repository.findById(stayPointId);
         if (stayPoint.isPresent()) {
             repository.delete(stayPoint.get());
+            return new ApiResponse<>(true, "", "Stay Point deleted successfully", null);
         } else {
             throw new IllegalArgumentException("Stay Point not found");
         }
