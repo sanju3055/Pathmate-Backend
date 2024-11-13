@@ -1,17 +1,29 @@
 package com.pathmates.application.serviceimpl;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import com.pathmates.application.dao.ContactRepository;
+import com.pathmates.application.dao.DestinationRepository;
 import com.pathmates.application.dao.TripRepository;
+import com.pathmates.application.dao.UserRepository;
 import com.pathmates.application.dto.TripDTO;
+import com.pathmates.application.entities.Contact;
+import com.pathmates.application.entities.Destination;
 import com.pathmates.application.entities.Trip;
+import com.pathmates.application.entities.User;
 import com.pathmates.application.mapper.TripMapper;
 import com.pathmates.application.service.TripService;
 import com.pathmates.application.utils.ApiResponse;
+
+import jakarta.transaction.Transactional;
 
 @Service
 public class TripServiceImpl implements TripService {
@@ -21,9 +33,96 @@ public class TripServiceImpl implements TripService {
     @Autowired
     private TripRepository repository;
 
+    @Autowired
+    private ContactRepository contactRepository;
+    @Autowired
+    private DestinationRepository destinationRepository;
+    @Autowired
+    private UserRepository userRepository;
+
     @Override
     public ApiResponse<TripDTO> createTrip(TripDTO tripDTO) {
-        return new ApiResponse<>(true, "", mapper.maTripDTO(repository.save(mapper.mapToTrip(tripDTO))), null);
+        if (tripDTO.getContacts().isEmpty()) {
+            return new ApiResponse<>(false, "Trip must have at least one contact", null, null);
+        }
+
+        if (tripDTO.getDestinations().isEmpty()) {
+            return new ApiResponse<>(false, "Trip must have at least one destination", null, null);
+        }
+
+        if (tripDTO.getStartDate().isAfter(tripDTO.getEndDate())) {
+            return new ApiResponse<>(false, "Start date cannot be after end date", null, null);
+        }
+        String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userRepository.findByEmail(userEmail);
+
+        if (user == null) {
+            return new ApiResponse<>(false, "User not found", null, null);
+        }
+        tripDTO.setUser(user);
+        Trip newTrip = new Trip();
+        newTrip.setName(tripDTO.getName());
+        newTrip.setDescription(tripDTO.getDescription());
+        newTrip.setStartDate(tripDTO.getStartDate());
+        newTrip.setStartTime(tripDTO.getStartTime());
+        newTrip.setEndDate(tripDTO.getEndDate());
+        newTrip.setEndTime(tripDTO.getEndTime());
+        newTrip.setUser(tripDTO.getUser());
+
+        Trip trip = repository.save(newTrip);
+
+        List<Destination> savedDestinations = saveDestinations(tripDTO.getDestinations(), trip);
+        List<Contact> savedContacts = saveContacts(tripDTO.getContacts(), trip);
+
+        trip.setDestinations(savedDestinations);
+        trip.setContacts(savedContacts);
+
+        Trip savedTrip = repository.save(trip);
+
+        return new ApiResponse<>(true, "Trip created successfully", mapper.maTripDTO(savedTrip), null);
+    }
+
+    private List<Destination> saveDestinations(List<Destination> destinations, Trip trip) {
+        destinations.forEach(destination -> destination.setTrip(trip));
+        return new ArrayList<>(destinationRepository.saveAll(destinations));
+    }
+
+    @Transactional
+    private List<Contact> saveContacts(List<Contact> contacts, Trip trip) {
+        contacts.forEach(contact -> {
+            contact.setTrip(trip);
+
+            if (contact.getEmailAddresses() == null) {
+                contact.setEmailAddresses(new ArrayList<>());
+            } else {
+                contact.setEmailAddresses(new ArrayList<>(contact.getEmailAddresses()));
+            }
+
+            if (contact.getPhoneNumbers() == null) {
+                contact.setPhoneNumbers(new ArrayList<>());
+            } else {
+                contact.setPhoneNumbers(new ArrayList<>(contact.getPhoneNumbers()));
+            }
+
+            if (contact.getPostalAddresses() == null) {
+                contact.setPostalAddresses(new ArrayList<>());
+            } else {
+                contact.setPostalAddresses(new ArrayList<>(contact.getPostalAddresses()));
+            }
+
+            if (contact.getImAddresses() == null) {
+                contact.setImAddresses(new ArrayList<>());
+            } else {
+                contact.setImAddresses(new ArrayList<>(contact.getImAddresses()));
+            }
+
+            if (contact.getUrlAddresses() == null) {
+                contact.setUrlAddresses(new ArrayList<>());
+            } else {
+                contact.setUrlAddresses(new ArrayList<>(contact.getUrlAddresses()));
+            }
+        });
+        return new ArrayList<>(contactRepository.saveAll(contacts));
     }
 
     @Override
@@ -44,12 +143,16 @@ public class TripServiceImpl implements TripService {
 
     @Override
     public ApiResponse<String> deleteTrip(String tripId) {
-        Optional<Trip> trip = repository.findById(tripId);
-        if (trip.isPresent()) {
-            repository.delete(trip.get());
-            return new ApiResponse<>(true, "", "Trip deleted successfully", null);
+        Optional<Trip> tripOptional = repository.findById(tripId);
+        if (tripOptional.isPresent()) {
+            Trip trip = tripOptional.get();
+            trip.getDestinations().clear();
+
+            repository.delete(trip);
+
+            return new ApiResponse<>(true, "Trip deleted successfully", "Trip deleted successfully", null);
         }
-        return new ApiResponse<>(true, "", "Trip is not found", null);
+        return new ApiResponse<>(false, "Trip is not found", "Trip not found", null);
     }
 
     @Override
@@ -72,7 +175,12 @@ public class TripServiceImpl implements TripService {
 
     @Override
     public ApiResponse<List<TripDTO>> getTrips() {
-        List<Trip> trips = repository.findAll();
+        String name = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userRepository.findByEmail(name);
+        if (user == null) {
+            return new ApiResponse<>(false, "User not found", null, null);
+        }
+        List<Trip> trips = repository.findByUser(user);
         return new ApiResponse<>(true, "", mapper.mapToTripDTOList(trips), null);
     }
 

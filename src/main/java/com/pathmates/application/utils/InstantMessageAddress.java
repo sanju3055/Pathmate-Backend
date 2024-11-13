@@ -10,6 +10,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Embeddable
 public class InstantMessageAddress {
+
+
+    private Long id;
     
     private String username;
     

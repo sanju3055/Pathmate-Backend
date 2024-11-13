@@ -11,6 +11,8 @@ import lombok.NoArgsConstructor;
 @Embeddable
 public class UrlAddress {
 
+    private Long id;
+
     private String url;
 
     private String label;

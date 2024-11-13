@@ -20,6 +20,7 @@ public class ChatMessageDTO {
     private Double latitude;
     private Double longitude;
     private LocalDateTime timestamp;
+    private String location;
     private Trip trip;
     private String createdBy;
 

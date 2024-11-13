@@ -11,6 +11,9 @@ import lombok.NoArgsConstructor;
 @Embeddable
 public class PostalAddress {
 
+
+    private Long id;
+
     private String label;
 
     private String formattedAddress;

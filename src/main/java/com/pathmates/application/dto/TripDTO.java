@@ -1,5 +1,6 @@
 package com.pathmates.application.dto;
 
+import java.util.List;
 import java.util.Set;
 
 import com.pathmates.application.entities.ChatMessage;
@@ -27,10 +28,10 @@ public class TripDTO {
     private LocalDateTime startTime;
     private LocalDateTime endTime;
 
-    private Set<ChatMessage> chatMessages;
-    private Set<Destination> destinations;
-    private Set<Contact> contacts;
-    private Set<User> users;
+    private List<ChatMessage> chatMessages;
+    private List<Destination> destinations;
+    private List<Contact> contacts;
+    private User user;
     private String createdBy;
 
     private Instant createdAt;

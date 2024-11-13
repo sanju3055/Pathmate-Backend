@@ -128,6 +128,12 @@ public class AuthController {
                 String token = jwtService.generateToken(userDetails);
                 AuthResponse authResponse = new AuthResponse();
                 authResponse.setToken(token);
+                authResponse.setEmail(user.getEmail());
+                authResponse.setPhoneNumber(user.getPhoneNumber());
+                authResponse.setUserId(user.getUserId());
+                if (user.getName() != null) {
+                    authResponse.setName(user.getName());
+                }
                 otpVerification.get().setIsVerified(true);
                 otpVerificationRepository.save(otpVerification.get());
 

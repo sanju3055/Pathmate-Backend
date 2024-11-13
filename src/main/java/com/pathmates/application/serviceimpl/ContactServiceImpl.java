@@ -43,11 +43,11 @@ public class ContactServiceImpl implements ContactService {
     }
 
     @Override
-    public ApiResponse<String>  deleteContact(String contactId) {
+    public ApiResponse<String> deleteContact(String contactId) {
         Optional<Contact> contact = repository.findById(contactId);
         if (contact.isPresent()) {
             repository.delete(contact.get());
-            return new ApiResponse<>(true, "", "Contact deleted successfully", null);
+            return new ApiResponse<>(true, "Contact deleted successfully", "Contact deleted successfully", null);
         } else {
             throw new IllegalArgumentException("Contact not found");
         }
@@ -65,7 +65,7 @@ public class ContactServiceImpl implements ContactService {
                 .map(mapper::mapToContactDTO)
                 .collect(Collectors.toList());
 
-        return new ApiResponse<>(true, "", savedContactDTOs, null);
+        return new ApiResponse<>(true, "Members added Successfully", savedContactDTOs, null);
 
     }
 

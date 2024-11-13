@@ -11,6 +11,8 @@ import lombok.NoArgsConstructor;
 @Embeddable
 public class Birthday {
 
+    private Long id;
+
     private int day;
 
     private int month;

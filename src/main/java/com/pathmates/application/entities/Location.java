@@ -9,6 +9,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 @Data
@@ -16,9 +17,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Entity
 @Table(name = "location")
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Location extends Auditable {
     @Id
     @UuidGenerator
+    @EqualsAndHashCode.Include
     private String locationId;
     private String name;
     private String description;

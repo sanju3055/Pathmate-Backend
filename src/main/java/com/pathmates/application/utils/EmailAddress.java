@@ -10,6 +10,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Embeddable
 public class EmailAddress {
+
+
+    private Long id;
     
     private String label;
     
