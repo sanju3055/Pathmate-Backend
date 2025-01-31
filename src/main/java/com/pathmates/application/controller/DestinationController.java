@@ -17,9 +17,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
-
-
-
 @RestController
 @RequestMapping(value = "/api/v1/destination")
 public class DestinationController {
@@ -36,10 +33,11 @@ public class DestinationController {
     public ResponseEntity<ApiResponse<DestinationDTO>> getDestinationById(@RequestParam String destinationId) {
         return new ResponseEntity<>(serviceImpl.getDestinationById(destinationId), HttpStatus.OK);
     }
-    
+
     @PutMapping("/{id}")
-    public ResponseEntity<ApiResponse<DestinationDTO>> updateDestination(@PathVariable String id, @RequestBody DestinationDTO entity) {
+    public ResponseEntity<ApiResponse<DestinationDTO>> updateDestination(@PathVariable String id,
+            @RequestBody DestinationDTO entity) {
         return new ResponseEntity<>(serviceImpl.updateDestination(id, entity), HttpStatus.OK);
     }
-    
+
 }
