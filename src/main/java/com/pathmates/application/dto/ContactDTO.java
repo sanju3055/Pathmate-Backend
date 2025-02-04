@@ -1,12 +1,12 @@
 package com.pathmates.application.dto;
 
+import com.pathmates.application.entities.Contact.Birthday;
+import com.pathmates.application.entities.Contact.EmailAddress;
+import com.pathmates.application.entities.Contact.PhoneNumber;
+import com.pathmates.application.entities.Contact.PostalAddress;
+import com.pathmates.application.entities.Contact.UrlAddress;
 import com.pathmates.application.entities.Trip;
-import com.pathmates.application.utils.Birthday;
-import com.pathmates.application.utils.EmailAddress;
-import com.pathmates.application.utils.InstantMessageAddress;
-import com.pathmates.application.utils.PhoneNumber;
-import com.pathmates.application.utils.PostalAddress;
-import com.pathmates.application.utils.UrlAddress;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -19,47 +19,28 @@ import java.util.List;
 public class ContactDTO {
     private String contactId;
 
-    private String recordID;
-
-    private String backTitle;
-
-    private String company;
-
+    private String id;
     private String displayName;
-
-    private String familyName;
-
     private String givenName;
-
+    private String familyName;
     private String middleName;
-
     private String jobTitle;
-
+    private String company;
+    private String department;
+    private String note;
     private boolean hasThumbnail;
-
     private String thumbnailPath;
 
-    private boolean isStarred;
-
-    private String prefix;
-
-    private String suffix;
-
-    private String department;
     private Birthday birthday;
 
-    private List<EmailAddress> emailAddresses;
+    private List<EmailAddress> emails;
 
     private List<PhoneNumber> phoneNumbers;
 
-    private List<PostalAddress> postalAddresses;
+    private List<PostalAddress> addresses;
 
-    private List<InstantMessageAddress> imAddresses;
+    private List<UrlAddress> urls;
 
-    private List<UrlAddress> urlAddresses;
-
-    private String note;
-    private boolean isRegistered;
     private Trip trip;
     private String createdBy;
 

@@ -1,11 +1,8 @@
 package com.pathmates.application.serviceimpl;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -92,37 +89,20 @@ public class TripServiceImpl implements TripService {
         contacts.forEach(contact -> {
             contact.setTrip(trip);
 
-            if (contact.getEmailAddresses() == null) {
-                contact.setEmailAddresses(new ArrayList<>());
-            } else {
-                contact.setEmailAddresses(new ArrayList<>(contact.getEmailAddresses()));
-            }
+            contact.setEmails(Optional.ofNullable(contact.getEmails())
+                    .map(ArrayList::new).orElseGet(ArrayList::new));
 
-            if (contact.getPhoneNumbers() == null) {
-                contact.setPhoneNumbers(new ArrayList<>());
-            } else {
-                contact.setPhoneNumbers(new ArrayList<>(contact.getPhoneNumbers()));
-            }
+            contact.setPhoneNumbers(Optional.ofNullable(contact.getPhoneNumbers())
+                    .map(ArrayList::new).orElseGet(ArrayList::new));
 
-            if (contact.getPostalAddresses() == null) {
-                contact.setPostalAddresses(new ArrayList<>());
-            } else {
-                contact.setPostalAddresses(new ArrayList<>(contact.getPostalAddresses()));
-            }
+            contact.setAddresses(Optional.ofNullable(contact.getAddresses())
+                    .map(ArrayList::new).orElseGet(ArrayList::new));
 
-            if (contact.getImAddresses() == null) {
-                contact.setImAddresses(new ArrayList<>());
-            } else {
-                contact.setImAddresses(new ArrayList<>(contact.getImAddresses()));
-            }
-
-            if (contact.getUrlAddresses() == null) {
-                contact.setUrlAddresses(new ArrayList<>());
-            } else {
-                contact.setUrlAddresses(new ArrayList<>(contact.getUrlAddresses()));
-            }
+            contact.setUrls(Optional.ofNullable(contact.getUrls())
+                    .map(ArrayList::new).orElseGet(ArrayList::new));
         });
-        return new ArrayList<>(contactRepository.saveAll(contacts));
+
+        return contactRepository.saveAll(contacts);
     }
 
     @Override
