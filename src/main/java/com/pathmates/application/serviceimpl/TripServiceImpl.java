@@ -1,6 +1,7 @@
 package com.pathmates.application.serviceimpl;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,8 +59,8 @@ public class TripServiceImpl implements TripService {
         }
         tripDTO.setUser(user);
         Trip newTrip = new Trip();
-        newTrip.setName(tripDTO.getName());
-        newTrip.setDescription(tripDTO.getDescription());
+        newTrip.setTripName(tripDTO.getTripName());
+        newTrip.setTripDescription(tripDTO.getTripDescription());
         newTrip.setStartDate(tripDTO.getStartDate());
         newTrip.setStartTime(tripDTO.getStartTime());
         newTrip.setEndDate(tripDTO.getEndDate());
@@ -85,21 +86,21 @@ public class TripServiceImpl implements TripService {
     }
 
     @Transactional
-    private List<Contact> saveContacts(List<Contact> contacts, Trip trip) {
+    public List<Contact> saveContacts(List<Contact> contacts, Trip trip) {
+        if (contacts == null || contacts.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        if (trip == null) {
+            throw new IllegalArgumentException("Trip cannot be null");
+        }
+
         contacts.forEach(contact -> {
             contact.setTrip(trip);
-
-            contact.setEmails(Optional.ofNullable(contact.getEmails())
-                    .map(ArrayList::new).orElseGet(ArrayList::new));
-
-            contact.setPhoneNumbers(Optional.ofNullable(contact.getPhoneNumbers())
-                    .map(ArrayList::new).orElseGet(ArrayList::new));
-
-            contact.setAddresses(Optional.ofNullable(contact.getAddresses())
-                    .map(ArrayList::new).orElseGet(ArrayList::new));
-
-            contact.setUrls(Optional.ofNullable(contact.getUrls())
-                    .map(ArrayList::new).orElseGet(ArrayList::new));
+            contact.setPhoneNumbers(
+                    new ArrayList<>(Optional.ofNullable(contact.getPhoneNumbers()).orElse(Collections.emptyList())));
+            contact.setAddresses(
+                    new ArrayList<>(Optional.ofNullable(contact.getAddresses()).orElse(Collections.emptyList())));
         });
 
         return contactRepository.saveAll(contacts);
@@ -114,7 +115,7 @@ public class TripServiceImpl implements TripService {
     public ApiResponse<TripDTO> updateTrip(String tripId, TripDTO tripDTO) {
         Optional<Trip> Trip = repository.findById(tripId);
         if (Trip.isPresent()) {
-            Trip.get().setName(tripDTO.getName());
+            Trip.get().setTripName(tripDTO.getTripName());
             repository.save(Trip.get());
             return new ApiResponse<>(true, "", mapper.maTripDTO(Trip.get()), null);
         }

@@ -11,9 +11,10 @@ import lombok.NoArgsConstructor;
 @Embeddable
 public class PhoneNumber {
 
-    private Long id;
-
+    private String id;
     private String label;
-
     private String number;
+    private Boolean isPrimary;
+    private String digits;
+    private String countryCode;
 }

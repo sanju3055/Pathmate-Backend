@@ -34,8 +34,8 @@ public class Trip extends Auditable {
     @EqualsAndHashCode.Include
     private String tripId;
 
-    private String name;
-    private String description;
+    private String tripName;
+    private String tripDescription;
 
     private LocalDateTime startDate;
     private LocalDateTime endDate;

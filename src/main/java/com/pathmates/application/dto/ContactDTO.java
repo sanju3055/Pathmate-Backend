@@ -1,56 +1,40 @@
 package com.pathmates.application.dto;
 
-import com.pathmates.application.entities.Contact.Birthday;
-import com.pathmates.application.entities.Contact.EmailAddress;
-import com.pathmates.application.entities.Contact.PhoneNumber;
-import com.pathmates.application.entities.Contact.PostalAddress;
-import com.pathmates.application.entities.Contact.UrlAddress;
-import com.pathmates.application.entities.Trip;
-
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import java.time.Instant;
+import lombok.*;
+import java.time.LocalDate;
 import java.util.List;
 
+import com.pathmates.application.utils.Address;
+import com.pathmates.application.utils.IMAccount;
+import com.pathmates.application.utils.PhoneNumber;
+import com.pathmates.application.utils.SocialProfile;
+
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Data
+@ToString
 public class ContactDTO {
+    
+    private Long id;
     private String contactId;
-
-    private String id;
-    private String displayName;
-    private String givenName;
-    private String familyName;
+    private String name;
+    private String firstName;
+    private String lastName;
     private String middleName;
-    private String jobTitle;
+    private String nickname;
     private String company;
+    private String jobTitle;
     private String department;
+    // private LocalDate birthday;
     private String note;
-    private boolean hasThumbnail;
-    private String thumbnailPath;
-
-    private Birthday birthday;
-
-    private List<EmailAddress> emails;
-
     private List<PhoneNumber> phoneNumbers;
-
-    private List<PostalAddress> addresses;
-
-    private List<UrlAddress> urls;
-
-    private Trip trip;
-    private String createdBy;
-
-    private Instant createdAt;
-
-    private String lastModifiedBy;
-
-    private Instant lastModifiedAt;
-
-    private String deletedBy;
-
-    private Instant deletedAt;
+    private List<Address> addresses;
+    private List<IMAccount> imAccounts;
+    private List<SocialProfile> socialProfiles;
 }
+
+
+
+
+
