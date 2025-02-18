@@ -3,6 +3,7 @@ package com.pathmates.application.controller;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
+import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -15,6 +16,8 @@ import com.pathmates.application.dao.ContactRepository;
 import com.pathmates.application.dao.TripRepository;
 import com.pathmates.application.entities.ChatMessage;
 import com.pathmates.application.entities.Contact;
+
+import jakarta.transaction.Transactional;
 
 @Controller
 public class ChatController {
@@ -31,10 +34,12 @@ public class ChatController {
     @Autowired
     private TripRepository tripRepository;
 
+    @Transactional
     @MessageMapping("/chat/{tripId}/sendMessage")
     public void sendMessage(@DestinationVariable String tripId, @Payload ChatMessage chatMessage) {
-        Optional<Contact> optionalContact = contactRepository.findByTripIdAndPhoneNumber(tripId, chatMessage.getSender().getPhoneNumbers().get(0));
+        Optional<Contact> optionalContact = contactRepository.findById(chatMessage.getSender().getContactId());
         if(optionalContact.isPresent()) {
+            Hibernate.initialize(optionalContact.get().getPhoneNumbers()); 
             chatMessage.setSender(optionalContact.get());
             chatMessage.setTrip(tripRepository.findById(tripId).get());
             chatMessage.setTimestamp(LocalDateTime.now());
